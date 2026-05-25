@@ -1,110 +1,62 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '../../utils/supabase';
+"use client";
+
+import { useEffect, useState } from "react";
+import supabase from "../../utils/supabaseClient";
 
 export default function CompanyDashboard() {
-    const router = useRouter();
-    const [company, setCompany] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [updating, setUpdating] = useState(false);
+  const [companies, setCompanies] = useState([]);
 
-    useEffect(() => {
-        const fetchCompanyData = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                router.push('/login');
-                return;
-            }
+  useEffect(() => {
+    fetchCompanies();
+  }, []);
 
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', user.id)
-                .single();
+  async function fetchCompanies() {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("role", "company");
 
-            if (profile) {
-                if (profile.user_type !== 'company') {
-                    router.push('/login'); // Protection layer
-                    return;
-                }
-                setCompany(profile);
-            }
-            setLoading(false);
-        };
-        fetchCompanyData();
-    }, [router]);
+    if (!error) setCompanies(data);
+  }
 
-    const toggleSponsorship = async () => {
-        setUpdating(true);
-        const newStatus = !company.show_in_marquee;
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1 style={{ fontSize: "1.8rem", fontWeight: "800" }}>الشركات الموثوقة</h1>
 
-        const { error } = await supabase
-            .from('profiles')
-            .update({ show_in_marquee: newStatus })
-            .eq('id', company.id);
+      {companies.length === 0 && (
+        <p style={{ marginTop: "20px" }}>لا توجد شركات مسجلة حتى الآن.</p>
+      )}
 
-        if (!error) {
-            setCompany({ ...company, show_in_marquee: newStatus });
-        }
-        setUpdating(false);
-    };
+      {companies.map((c) => (
+        <div
+          key={c.id}
+          style={{
+            padding: "15px",
+            background: "#fff",
+            borderRadius: "12px",
+            marginTop: "15px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+          }}
+        >
+          <h3 style={{ margin: 0 }}>{c.full_name}</h3>
+          <p style={{ margin: "5px 0" }}>{c.category}</p>
 
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        router.push('/login');
-    };
-
-    if (loading) return <div style={{ textAlign: 'center', marginTop: '100px', fontWeight: '600' }}>Loading corporate portal...</div>;
-
-    return (
-        <div style={{ maxWidth: '900px', margin: '40px auto', padding: '0 20px', fontFamily: 'sans-serif' }}>
-            
-            {/* Header Section */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', borderBottom: '1px solid #f1f3f4', paddingBottom: '20px' }}>
-                <div>
-                    <span style={{ fontSize: '0.85rem', color: '#0b5b2f', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>Corporate Dashboard</span>
-                    <h2 style={{ margin: '5px 0 0 0', color: '#1e2a2f', fontSize: '1.8rem', fontWeight: '800' }}>Welcome, {company?.full_name} 🏢</h2>
-                </div>
-                <button onClick={handleLogout} style={{ padding: '10px 20px', background: '#fce8e6', color: '#c5221f', border: 'none', borderRadius: '30px', fontWeight: '600', cursor: 'pointer' }}>
-                    Sign Out
-                </button>
-            </div>
-
-            {/* Quick Stats Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '40px' }}>
-                <div style={{ background: '#fcfaf7', padding: '24px', borderRadius: '12px', border: '1px solid #e1d5c6' }}>
-                    <h5 style={{ margin: '0 0 10px 0', color: '#7a6a58', textTransform: 'uppercase', fontSize: '0.8rem' }}>Account Status</h5>
-                    <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '700', color: '#0b5b2f' }}>Verified Premium</p>
-                </div>
-                <div style={{ background: '#fcfaf7', padding: '24px', borderRadius: '12px', border: '1px solid #e1d5c6' }}>
-                    <h5 style={{ margin: '0 0 10px 0', color: '#7a6a58', textTransform: 'uppercase', fontSize: '0.8rem' }}>Active Job Leads</h5>
-                    <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '700', color: '#1e2a2f' }}>0 Active</p>
-                </div>
-            </div>
-
-            {/* Premium Advertisement Tool */}
-            <div style={{ background: '#fff', border: '2px dashed #c49a6c', borderRadius: '16px', padding: '30px', textAlign: 'center', boxShadow: '0 4px 25px rgba(196,154,108,0.1)' }}>
-                <h3 style={{ margin: '0 0 10px 0', color: '#1e2a2f', fontWeight: '800' }}>Sponsored Visibility Boost</h3>
-                <p style={{ color: '#5f6368', maxWidth: '600px', margin: '0 auto 24px auto', fontSize: '0.95rem', lineHeight: '1.5' }}>
-                    Activating sponsorship places your company card at the absolute top of the advanced search engine with a premium golden badge highlight to double your customer calls.
-                </p>
-
-                <div style={{ marginBottom: '20px' }}>
-                    <span style={{ fontSize: '0.9rem', padding: '6px 14px', borderRadius: '20px', fontWeight: '700', background: company?.show_in_marquee ? '#e6f4ea' : '#f1f3f4', color: company?.show_in_marquee ? '#137333' : '#5f6368' }}>
-                        Current Status: {company?.show_in_marquee ? '🌟 Active on Top Marquee' : '⏸️ Standard Placement'}
-                    </span>
-                </div>
-
-                <button 
-                    onClick={toggleSponsorship}
-                    disabled={updating}
-                    style={{ padding: '14px 35px', background: company?.show_in_marquee ? '#1e2a2f' : '#c49a6c', color: '#fff', border: 'none', borderRadius: '40px', fontWeight: '600', cursor: 'pointer', fontSize: '1rem', transition: '0.3s' }}
-                >
-                    {updating ? 'Processing Custom Update...' : company?.show_in_marquee ? 'Pause Sponsored Premium' : 'Activate Premium Marquee Now →'}
-                </button>
-            </div>
-
+          <a
+            href={`/company-profile?id=${c.id}`}
+            style={{
+              display: "inline-block",
+              marginTop: "10px",
+              padding: "8px 15px",
+              background: "#1e2a2f",
+              color: "#fff",
+              borderRadius: "8px",
+              textDecoration: "none"
+            }}
+          >
+            عرض الملف →
+          </a>
         </div>
-    );
-      }
+      ))}
+    </div>
+  );
+              }
