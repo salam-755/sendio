@@ -1,93 +1,145 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { supabase } from '../utils/supabase';
+"use client";
+
+import { useEffect, useState } from "react";
+import supabase from "../utils/supabaseClient";
 
 export default function HomePage() {
-    const [settings, setSettings] = useState(null);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [companies, setCompanies] = useState([]);
+  const [workers, setWorkers] = useState([]);
+  const [clients, setClients] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            // Fetch global configurations and content
-            const { data: siteData } = await supabase
-                .from('site_settings')
-                .select('*')
-                .eq('id', 1)
-                .single();
-            
-            if (siteData) setSettings(siteData);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-            // Fetch structural services categories
-            const { data: categoryData } = await supabase
-                .from('services_categories')
-                .select('*');
-            
-            if (categoryData) setCategories(categoryData);
-            
-            setLoading(false);
-        };
-        fetchData();
-    }, []);
+  async function fetchData() {
+    const { data: comp } = await supabase.from("profiles").select("*").eq("role", "company");
+    const { data: work } = await supabase.from("profiles").select("*").eq("role", "worker");
+    const { data: cli } = await supabase.from("profiles").select("*").eq("role", "client");
 
-    if (loading) return <div style={{ textAlign: 'center', marginTop: '100px', fontWeight: '600' }}>Loading platform layout...</div>;
+    setCompanies(comp || []);
+    setWorkers(work || []);
+    setClients(cli || []);
+  }
 
-    return (
-        <div style={{ fontFamily: 'sans-serif', color: '#1e2a2f', backgroundColor: '#fff', margin: 0, padding: 0 }}>
-            
-            {/* Hero Section & Core Services Categories */}
-            <section style={{ padding: '60px 20px', textAlign: 'center', background: 'linear-gradient(135deg, #fcfaf7 0%, #e1d5c6 100%)' }}>
-                <h1 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '15px' }}>BELG SERVICES</h1>
-                <p style={{ fontSize: '1.1rem', color: '#7a6a58', maxWidth: '600px', margin: '0 auto 40px auto' }}>
-                    Your premium gateway to book top-tier certified logistics, maintenance, and household solutions.
-                </p>
+  return (
+    <div>
 
-                {/* Dynamic Services Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', maxWidth: '1000px', margin: '0 auto' }}>
-                    {categories.map((category) => (
-                        <div key={category.id} style={{ background: '#fff', padding: '30px 20px', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.04)', textAlign: 'center', border: '1px solid #f1f3f4' }}>
-                            <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>{category.icon}</div>
-                            <h3 style={{ fontSize: '1.1rem', margin: '0 0 10px 0', color: '#1e2a2f' }}>{category.name_en}</h3>
-                        </div>
-                    ))}
-                </div>
-            </section>
+      {/* HERO SECTION */}
+      <section style={{ padding: "40px 20px", textAlign: "center" }}>
+        <h1 style={{ fontSize: "2rem", fontWeight: "800" }}>SENDIO PLATFORM</h1>
+        <p style={{ fontSize: "1.1rem", marginTop: "10px" }}>
+          منصة شاملة تربط بين الشركات، العمال، والزبائن في مكان واحد.
+        </p>
+      </section>
 
-            {/* About Us Content Block (Dynamically Fetched) */}
-            <section style={{ padding: '60px 20px', maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-                <h2 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '20px', color: '#0b5b2f' }}>About Our Platform</h2>
-                <p style={{ fontSize: '1.05rem', lineHeight: '1.6', color: '#5f6368' }}>
-                    {settings?.about_us_content}
-                </p>
-            </section>
+      {/* MAIN CATEGORIES */}
+      <section style={{ display: "flex", gap: "15px", padding: "20px", overflowX: "auto" }}>
+        <a href="/client-dashboard" style={card}>الزبون</a>
+        <a href="/worker-dashboard" style={card}>العامل</a>
+        <a href="/company-dashboard" style={card}>الشركات</a>
+      </section>
 
-            {/* Contact Us & Application Downloads */}
-            <section style={{ padding: '50px 20px', background: '#1e2a2f', color: '#fff', textAlign: 'center' }}>
-                <div style={{ maxWidth: '900px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                    
-                    <div>
-                        <h3 style={{ fontSize: '1.5rem', marginBottom: '15px', color: '#c49a6c' }}>Connect With Us</h3>
-                        <p style={{ margin: '5px 0' }}>Email: {settings?.contact_email}</p>
-                        <p style={{ margin: '5px 0' }}>Phone: {settings?.contact_phone}</p>
-                        <p style={{ margin: '5px 0' }}>Office: {settings?.office_address}</p>
-                    </div>
+      {/* SERVICES */}
+      <section style={{ padding: "20px" }}>
+        <h2>الخدمات</h2>
 
-                    {/* App Stores Distribution Badges Links */}
-                    <div style={{ borderTop: '1px solid #2d3d45', paddingTop: '30px' }}>
-                        <h4 style={{ marginBottom: '15px', color: '#e1d5c6' }}>Download Official Applications</h4>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
-                            <a href={settings?.app_store_url} target="_blank" rel="noreferrer" style={{ background: '#000', color: '#fff', padding: '10px 20px', borderRadius: '8px', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>
-                                App Store
-                            </a>
-                            <a href={settings?.google_play_url} target="_blank" rel="noreferrer" style={{ background: '#000', color: '#fff', padding: '10px 20px', borderRadius: '8px', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>
-                                Google Play
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
+        <div style={{ display: "flex", gap: "15px", overflowX: "auto" }}>
+          <div style={serviceCard}>🚚 التوصيل</div>
+          <div style={serviceCard}>🧹 التنظيف</div>
+          <div style={serviceCard}>🏗 البناء</div>
+          <div style={serviceCard}>🚛 النقل</div>
+          <div style={serviceCard}>🌿 الزراعة</div>
         </div>
-    );
+      </section>
+
+      {/* ADS SLIDER */}
+      <section style={{ padding: "20px" }}>
+        <h2>الإعلانات</h2>
+
+        <div style={{ display: "flex", gap: "15px", overflowX: "auto" }}>
+          <div style={adCard}>🔥 إعلان 1</div>
+          <div style={adCard}>⭐ إعلان 2</div>
+          <div style={adCard}>💼 إعلان 3</div>
+          <div style={adCard}>🏆 إعلان 4</div>
+        </div>
+      </section>
+
+      {/* COMPANIES */}
+      <section style={{ padding: "20px" }}>
+        <h2>الشركات الموثوقة</h2>
+
+        {companies.map((c) => (
+          <div key={c.id} style={listItem}>
+            <strong>{c.full_name}</strong>
+            <p>{c.category}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* WORKERS */}
+      <section style={{ padding: "20px" }}>
+        <h2>أفضل العمال</h2>
+
+        {workers.map((w) => (
+          <div key={w.id} style={listItem}>
+            <strong>{w.full_name}</strong>
+            <p>{w.skill}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* CLIENTS */}
+      <section style={{ padding: "20px" }}>
+        <h2>الزبائن</h2>
+
+        {clients.map((cl) => (
+          <div key={cl.id} style={listItem}>
+            <strong>{cl.full_name}</strong>
+            <p>{cl.email}</p>
+          </div>
+        ))}
+      </section>
+
+    </div>
+  );
 }
+
+const card = {
+  minWidth: "120px",
+  padding: "20px",
+  background: "#f5f5f5",
+  borderRadius: "12px",
+  textAlign: "center",
+  fontWeight: "600",
+  textDecoration: "none",
+  color: "#000"
+};
+
+const serviceCard = {
+  minWidth: "140px",
+  padding: "20px",
+  background: "#fff",
+  borderRadius: "12px",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  textAlign: "center",
+  fontWeight: "600"
+};
+
+const adCard = {
+  minWidth: "180px",
+  padding: "20px",
+  background: "#1e2a2f",
+  color: "#fff",
+  borderRadius: "15px",
+  textAlign: "center",
+  fontWeight: "700"
+};
+
+const listItem = {
+  padding: "15px",
+  background: "#fff",
+  borderRadius: "10px",
+  marginBottom: "10px",
+  boxShadow: "0 1px 4px rgba(0,0,0,0.1)"
+};
