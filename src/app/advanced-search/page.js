@@ -59,10 +59,15 @@ export default function AdvancedSearchPage() {
                     onChange={(e) => setRoleFilter(e.target.value)}
                     style={{ flex: 1, minWidth: '160px', padding: '14px', borderRadius: '30px', border: '1px solid #e1d5c6', fontSize: '1rem', background: '#fff' }}
                 />
-                    <option value="all">All Providers</option>
-                    <option value="company">Verified Companies 🏢</option>
-                    <option value="worker">Professional Workers 🛠️</option>
-                </select>
+            <select 
+    value={roleFilter} 
+    onChange={(e) => setRoleFilter(e.target.value)}
+    style={{ flex: 1, minWidth: '160px', padding: '14px', borderRadius: '30px', border: '1px solid #e1d5c6', fontSize: '1rem', background: '#fff' }}
+>
+    <option value="all">All Providers</option>
+    <option value="company">Verified Companies 🏢</option>
+    <option value="worker">Professional Workers 🛠️</option>
+</select>
             </div>
 
             {loading ? (
