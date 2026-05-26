@@ -14,17 +14,18 @@ export default function CompanyDashboard() {
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
-      .eq("role", "company");
+      .eq("user_type", "company")
+      .eq("is_profile_complete", true);
 
     if (!error) setCompanies(data);
   }
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1 style={{ fontSize: "1.8rem", fontWeight: "800" }}>الشركات الموثوقة</h1>
+      <h1 style={{ fontSize: "1.8rem", fontWeight: "800" }}>Verified Companies</h1>
 
       {companies.length === 0 && (
-        <p style={{ marginTop: "20px" }}>لا توجد شركات مسجلة حتى الآن.</p>
+        <p style={{ marginTop: "20px" }}>No companies registered yet.</p>
       )}
 
       {companies.map((c) => (
@@ -39,7 +40,7 @@ export default function CompanyDashboard() {
           }}
         >
           <h3 style={{ margin: 0 }}>{c.full_name}</h3>
-          <p style={{ margin: "5px 0" }}>{c.category}</p>
+          <p style={{ margin: "5px 0" }}>{c.business_category || "General Services"}</p>
 
           <a
             href={`/company-profile?id=${c.id}`}
@@ -53,10 +54,10 @@ export default function CompanyDashboard() {
               textDecoration: "none"
             }}
           >
-            عرض الملف →
+            View Profile →
           </a>
         </div>
       ))}
     </div>
   );
-              }
+          }
