@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '../../utils/supabase';
+import supabase from '../../utils/supabaseClient';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -27,6 +27,7 @@ export default function LoginPage() {
         }
 
         const userId = authData.user.id;
+
         const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('user_type, is_profile_complete')
@@ -96,5 +97,4 @@ export default function LoginPage() {
             )}
         </div>
     );
-  }
-  
+                            }
