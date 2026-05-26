@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { supabase } from '../../utils/supabase';
+import supabase from '../../utils/supabaseClient';
 
 export default function RegisterPage() {
     const [email, setEmail] = useState('');
@@ -53,8 +53,8 @@ export default function RegisterPage() {
                                     borderRadius: '8px',
                                     border: '2px solid',
                                     borderColor: userType === role ? '#0b5b2f' : '#e1d5c6',
-                                    backgroundColor: userType === role ? '#0b5b2f' : '#white',
-                                    color: userType === role ? '#white' : '#1e2a2f',
+                                    backgroundColor: userType === role ? '#0b5b2f' : '#fff',
+                                    color: userType === role ? '#fff' : '#1e2a2f',
                                     fontWeight: '700',
                                     cursor: 'pointer',
                                     textTransform: 'capitalize',
@@ -116,5 +116,4 @@ export default function RegisterPage() {
             )}
         </div>
     );
-  }
-                                  
+}
