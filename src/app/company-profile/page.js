@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import supabase from "../../utils/supabaseClient";
+import supabase from "../../../utils/supabaseClient";
 
 export default function CompanyProfile() {
   const params = useSearchParams();
@@ -19,11 +19,33 @@ export default function CompanyProfile() {
   }, [companyId]);
 
   async function loadData() {
-    const { data: p } = await supabase.from("profiles").select("*").eq("id", companyId).single();
-    const { data: cp } = await supabase.from("company_profiles").select("*").eq("company_id", companyId).single();
-    const { data: m } = await supabase.from("company_media").select("*").eq("company_id", companyId);
-    const { data: s } = await supabase.from("company_services").select("*").eq("company_id", companyId);
-    const { data: sc } = await supabase.from("company_social").select("*").eq("company_id", companyId).single();
+    const { data: p } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", companyId)
+      .single();
+
+    const { data: cp } = await supabase
+      .from("company_profiles")
+      .select("*")
+      .eq("company_id", companyId)
+      .single();
+
+    const { data: m } = await supabase
+      .from("company_media")
+      .select("*")
+      .eq("company_id", companyId);
+
+    const { data: s } = await supabase
+      .from("company_services")
+      .select("*")
+      .eq("company_id", companyId);
+
+    const { data: sc } = await supabase
+      .from("company_social")
+      .select("*")
+      .eq("company_id", companyId)
+      .single();
 
     setProfile(p);
     setCompany(cp);
@@ -61,7 +83,7 @@ export default function CompanyProfile() {
 
       {/* DESCRIPTION */}
       <section style={{ marginTop: "20px" }}>
-        <h2>عن الشركة</h2>
+        <h2>الوصف</h2>
         <p>{company?.description || "لا يوجد وصف متاح."}</p>
       </section>
 
@@ -69,7 +91,7 @@ export default function CompanyProfile() {
       <section style={{ marginTop: "20px" }}>
         <h2>الخدمات</h2>
 
-        {services.length === 0 && <p>لا توجد خدمات مسجلة.</p>}
+        {services.length === 0 && <p>لا توجد خدمات متاحة.</p>}
 
         {services.map((srv) => (
           <div
@@ -134,4 +156,4 @@ export default function CompanyProfile() {
 
     </div>
   );
-    }
+            }
