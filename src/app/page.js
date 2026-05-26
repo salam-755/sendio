@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import supabase from "../utils/supabaseClient";
 
 export default function HomePage() {
@@ -13,9 +14,23 @@ export default function HomePage() {
   }, []);
 
   async function fetchData() {
-    const { data: comp } = await supabase.from("profiles").select("*").eq("role", "company");
-    const { data: work } = await supabase.from("profiles").select("*").eq("role", "worker");
-    const { data: cli } = await supabase.from("profiles").select("*").eq("role", "client");
+    const { data: comp } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_type", "company")
+      .eq("is_profile_complete", true);
+
+    const { data: work } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_type", "worker")
+      .eq("is_profile_complete", true);
+
+    const { data: cli } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_type", "client")
+      .eq("is_profile_complete", true);
 
     setCompanies(comp || []);
     setWorkers(work || []);
@@ -29,69 +44,69 @@ export default function HomePage() {
       <section style={{ padding: "40px 20px", textAlign: "center" }}>
         <h1 style={{ fontSize: "2rem", fontWeight: "800" }}>SENDIO PLATFORM</h1>
         <p style={{ fontSize: "1.1rem", marginTop: "10px" }}>
-          منصة شاملة تربط بين الشركات، العمال، والزبائن في مكان واحد.
+          A unified platform connecting companies, workers, and clients in one place.
         </p>
       </section>
 
       {/* MAIN CATEGORIES */}
       <section style={{ display: "flex", gap: "15px", padding: "20px", overflowX: "auto" }}>
-        <a href="/client-dashboard" style={card}>الزبون</a>
-        <a href="/worker-dashboard" style={card}>العامل</a>
-        <a href="/company-dashboard" style={card}>الشركات</a>
+        <Link href="/client-dashboard" style={card}>Client</Link>
+        <Link href="/worker-dashboard" style={card}>Worker</Link>
+        <Link href="/company-dashboard" style={card}>Companies</Link>
       </section>
 
       {/* SERVICES */}
       <section style={{ padding: "20px" }}>
-        <h2>الخدمات</h2>
+        <h2>Popular Services</h2>
 
         <div style={{ display: "flex", gap: "15px", overflowX: "auto" }}>
-          <div style={serviceCard}>🚚 التوصيل</div>
-          <div style={serviceCard}>🧹 التنظيف</div>
-          <div style={serviceCard}>🏗 البناء</div>
-          <div style={serviceCard}>🚛 النقل</div>
-          <div style={serviceCard}>🌿 الزراعة</div>
+          <div style={serviceCard}>🚚 Delivery</div>
+          <div style={serviceCard}>🧹 Cleaning</div>
+          <div style={serviceCard}>🏗 Construction</div>
+          <div style={serviceCard}>🚛 Transport</div>
+          <div style={serviceCard}>🌿 Gardening</div>
         </div>
       </section>
 
       {/* ADS SLIDER */}
       <section style={{ padding: "20px" }}>
-        <h2>الإعلانات</h2>
+        <h2>Advertisements</h2>
 
         <div style={{ display: "flex", gap: "15px", overflowX: "auto" }}>
-          <div style={adCard}>🔥 إعلان 1</div>
-          <div style={adCard}>⭐ إعلان 2</div>
-          <div style={adCard}>💼 إعلان 3</div>
-          <div style={adCard}>🏆 إعلان 4</div>
+          <div style={adCard}>🔥 Ad 1</div>
+          <div style={adCard}>⭐ Ad 2</div>
+          <div style={adCard}>💼 Ad 3</div>
+          <div style={adCard}>🏆 Ad 4</div>
         </div>
       </section>
 
       {/* COMPANIES */}
       <section style={{ padding: "20px" }}>
-        <h2>الشركات الموثوقة</h2>
+        <h2>Verified Companies</h2>
 
         {companies.map((c) => (
           <div key={c.id} style={listItem}>
             <strong>{c.full_name}</strong>
-            <p>{c.category}</p>
+            <p>{c.business_category || "General Services"}</p>
           </div>
         ))}
       </section>
 
       {/* WORKERS */}
       <section style={{ padding: "20px" }}>
-        <h2>أفضل العمال</h2>
+        <h2>Top Workers</h2>
 
         {workers.map((w) => (
           <div key={w.id} style={listItem}>
             <strong>{w.full_name}</strong>
-            <p>{w.skill}</p>
+            <p>{w.bio || "No bio available"}</p>
           </div>
         ))}
       </section>
 
       {/* CLIENTS */}
       <section style={{ padding: "20px" }}>
-        <h2>الزبائن</h2>
+        <h2>Clients</h2>
 
         {clients.map((cl) => (
           <div key={cl.id} style={listItem}>
