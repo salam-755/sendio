@@ -77,7 +77,7 @@ export default function CompanyProfile() {
         )}
         <div>
           <h1 style={{ margin: 0 }}>{profile.full_name}</h1>
-          <p style={{ margin: 0 }}>{company?.category}</p>
+          <p style={{ margin: 0 }}>{company?.business_category}</p>
         </div>
       </div>
 
@@ -118,12 +118,42 @@ export default function CompanyProfile() {
         <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
           {media.map((m) => (
             <div key={m.id}>
-              {m.type === "image" && (
+              {m.media_type === "image" && (
                 <img
-                  src={m.url}
+                  src={m.media_url}
                   style={{ width: "160px", height: "120px", borderRadius: "10px" }}
                 />
               )}
 
-              {m.type === "video" && (
+              {m.media_type === "video" && (
                 <video
+                  src={m.media_url}
+                  controls
+                  style={{ width: "160px", height: "120px", borderRadius: "10px" }}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* SOCIAL */}
+      <section style={{ marginTop: "20px" }}>
+        <h2>Social Links</h2>
+
+        {social ? (
+          <ul>
+            {social.facebook && <li><a href={social.facebook}>Facebook</a></li>}
+            {social.instagram && <li><a href={social.instagram}>Instagram</a></li>}
+            {social.tiktok && <li><a href={social.tiktok}>TikTok</a></li>}
+            {social.youtube && <li><a href={social.youtube}>YouTube</a></li>}
+            {social.website && <li><a href={social.website}>Website</a></li>}
+          </ul>
+        ) : (
+          <p>No social links available.</p>
+        )}
+      </section>
+
+    </div>
+  );
+              }
