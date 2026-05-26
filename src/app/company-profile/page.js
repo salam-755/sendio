@@ -54,7 +54,7 @@ export default function CompanyProfile() {
     setSocial(sc);
   }
 
-  if (!profile) return <p style={{ padding: 20 }}>جاري تحميل بيانات الشركة...</p>;
+  if (!profile) return <p style={{ padding: 20 }}>Loading company data...</p>;
 
   return (
     <div style={{ padding: "20px" }}>
@@ -83,15 +83,15 @@ export default function CompanyProfile() {
 
       {/* DESCRIPTION */}
       <section style={{ marginTop: "20px" }}>
-        <h2>الوصف</h2>
-        <p>{company?.description || "لا يوجد وصف متاح."}</p>
+        <h2>Description</h2>
+        <p>{company?.description || "No description available."}</p>
       </section>
 
       {/* SERVICES */}
       <section style={{ marginTop: "20px" }}>
-        <h2>الخدمات</h2>
+        <h2>Services</h2>
 
-        {services.length === 0 && <p>لا توجد خدمات متاحة.</p>}
+        {services.length === 0 && <p>No services available.</p>}
 
         {services.map((srv) => (
           <div
@@ -106,14 +106,14 @@ export default function CompanyProfile() {
           >
             <strong>{srv.service_name}</strong>
             <p>{srv.description}</p>
-            <p>السعر: {srv.price} €</p>
+            <p>Price: {srv.price} €</p>
           </div>
         ))}
       </section>
 
       {/* MEDIA */}
       <section style={{ marginTop: "20px" }}>
-        <h2>معرض الصور والفيديو</h2>
+        <h2>Media Gallery</h2>
 
         <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
           {media.map((m) => (
@@ -127,33 +127,3 @@ export default function CompanyProfile() {
 
               {m.type === "video" && (
                 <video
-                  src={m.url}
-                  controls
-                  style={{ width: "160px", height: "120px", borderRadius: "10px" }}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* SOCIAL */}
-      <section style={{ marginTop: "20px" }}>
-        <h2>روابط السوشيال</h2>
-
-        {social ? (
-          <ul>
-            {social.facebook && <li><a href={social.facebook}>Facebook</a></li>}
-            {social.instagram && <li><a href={social.instagram}>Instagram</a></li>}
-            {social.tiktok && <li><a href={social.tiktok}>TikTok</a></li>}
-            {social.youtube && <li><a href={social.youtube}>YouTube</a></li>}
-            {social.website && <li><a href={social.website}>Website</a></li>}
-          </ul>
-        ) : (
-          <p>لا توجد روابط.</p>
-        )}
-      </section>
-
-    </div>
-  );
-            }
