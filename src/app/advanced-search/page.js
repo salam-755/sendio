@@ -50,7 +50,6 @@ export default function AdvancedSearchPage() {
                 <p style={{ color: '#7a6a58' }}>Connect with certified companies and independent professional workers</p>
             </div>
 
-            {/* Filters */}
             <div style={{ display: 'flex', gap: '15px', marginBottom: '30px', flexWrap: 'wrap' }}>
                 <input
                     type="text"
@@ -124,4 +123,19 @@ export default function AdvancedSearchPage() {
                                         padding: '4px 10px',
                                         borderRadius: '20px',
                                         fontSize: '0.75rem',
-                                        fontWeight: '700
+                                        fontWeight: '700'
+                                    }}
+                                >
+                                    Featured
+                                </span>
+                            )}
+                            <h3 style={{ margin: '0 0 10px 0', fontSize: '1.25rem' }}>{provider.full_name}</h3>
+                            <p style={{ color: '#555', margin: '0 0 20px 0' }}>{provider.bio || 'No bio available'}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+                    }
+                        
